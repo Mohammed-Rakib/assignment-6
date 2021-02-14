@@ -15,23 +15,29 @@ const KEY = '15674931-a9d714b6e9d654524df198e00&q';
 
 // show images 
 const showImages = (images) => {
+  toggleSpinner();
   imagesArea.style.display = 'block';
   gallery.innerHTML = '';
   // show gallery title
   galleryHeader.style.display = 'flex';
   images.forEach(image => {
     let div = document.createElement('div');
-    div.className = 'col-lg-3 col-md-4 col-xs-6 img-item mb-2';
-    div.innerHTML = ` <img class="img-fluid img-thumbnail" onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">`;
-    gallery.appendChild(div)
+    div.className = 'col-lg-3 col-md-4 col-xs-6 img-item mb-2 p-2';
+    div.innerHTML = ` <img class="img-fluid img-thumbnail" onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">
+    <h2 class="text-center "> ${image.user}</h2>
+    `;
+
+    gallery.appendChild(div);
+   
   })
 
 }
 
 const getImages = (query) => {
+  toggleSpinner()
   fetch(`https://pixabay.com/api/?key=${KEY}=${query}&image_type=photo&pretty=true`)
     .then(response => response.json())
-    .then(data => showImages(data.hits))
+    .then(data =>showImages(data.hits))
     .catch(err => console.log(err))
 }
 
@@ -78,6 +84,7 @@ const createSlider = () => {
     src="${slide}"
     alt="">`;
     sliderContainer.appendChild(item)
+    
   })
   changeSlide(0)
   timer = setInterval(function () {
@@ -116,7 +123,7 @@ searchBtn.addEventListener('click', function () {
   document.querySelector('.main').style.display = 'none';
   clearInterval(timer);
   const search = document.getElementById('search');
-  getImages(search.value)
+  getImages(search.value);
   sliders.length = 0;
 })
 
@@ -129,11 +136,16 @@ var input = document.getElementById("search");
 
 // Execute a function when the user releases a key on the keyboard
 input.addEventListener("keyup", function(event) {
-  // Number 13 is the "Enter" key on the keyboard
   if (event.keyCode === 13) {
-    // Cancel the default action, if needed
     event.preventDefault();
-    // Trigger the button element with a click
     document.getElementById("search-btn").click();
   }
 });
+
+// spinner
+const toggleSpinner = () => {
+  const spinner = document.getElementById('spinner');
+  // const songs = document.getElementById('display');
+  spinner.classList.toggle("d-none");
+  imagesArea.classList.toggle("d-none")
+}
